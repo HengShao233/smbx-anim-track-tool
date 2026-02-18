@@ -76,13 +76,6 @@ public partial class TrackExporterDock : VBoxContainer
 
         _trackTree.Columns = 7;
         _trackTree.HideRoot = true;
-        _trackTree.SetColumnTitle(0, "轨道");
-        _trackTree.SetColumnTitle(1, "类型");
-        _trackTree.SetColumnTitle(2, "Idx");
-        _trackTree.SetColumnTitle(3, "乘数");
-        _trackTree.SetColumnTitle(4, "内加");
-        _trackTree.SetColumnTitle(5, "外加");
-        _trackTree.SetColumnTitle(6, "键数");
         _trackTree.SetColumnExpand(0, true);
         _trackTree.SetColumnExpand(1, true);
         _trackTree.SetColumnExpand(2, true);
@@ -90,13 +83,15 @@ public partial class TrackExporterDock : VBoxContainer
         _trackTree.SetColumnExpand(4, true);
         _trackTree.SetColumnExpand(5, true);
         _trackTree.SetColumnExpand(6, true);
-        _trackTree.SetColumnCustomMinimumWidth(0, 140);
-        _trackTree.SetColumnCustomMinimumWidth(1, 60);
+        _trackTree.SetColumnExpand(7, true);
+        _trackTree.SetColumnCustomMinimumWidth(0, 10);
+        _trackTree.SetColumnCustomMinimumWidth(1, 140);
         _trackTree.SetColumnCustomMinimumWidth(2, 50);
         _trackTree.SetColumnCustomMinimumWidth(3, 50);
         _trackTree.SetColumnCustomMinimumWidth(4, 50);
         _trackTree.SetColumnCustomMinimumWidth(5, 50);
         _trackTree.SetColumnCustomMinimumWidth(6, 50);
+        _trackTree.SetColumnCustomMinimumWidth(7, 50);
         _trackTree.CustomMinimumSize = Vector2.Zero;
         _trackTree.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         _trackTree.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -201,13 +196,14 @@ public partial class TrackExporterDock : VBoxContainer
         }
 
         var titleItem = _trackTree.CreateItem(root);
-        titleItem.SetText(0, "轨道");
-        titleItem.SetText(1, "类型");
-        titleItem.SetText(2, "索引");
-        titleItem.SetText(3, "乘数");
-        titleItem.SetText(4, "内加");
-        titleItem.SetText(5, "外加");
-        titleItem.SetText(6, "键数");
+        titleItem.SetText(0, "启用");
+        titleItem.SetText(1, "轨道");
+        titleItem.SetText(2, "类型");
+        titleItem.SetText(3, "索引");
+        titleItem.SetText(4, "乘数");
+        titleItem.SetText(5, "内加");
+        titleItem.SetText(6, "外加");
+        titleItem.SetText(7, "键数");
 
         var trackCount = animation.GetTrackCount();
         for (var i = 0; i < trackCount; i++)
@@ -219,20 +215,21 @@ public partial class TrackExporterDock : VBoxContainer
 
             var settings = GetSettings(animName, path);
 
-            item.SetText(0, path);
-            item.SetText(1, type);
-            item.SetText(2, settings.Idx.ToString());
-            item.SetText(3, settings.Multiplier.ToString());
-            item.SetText(4, settings.InnerAdd.ToString());
-            item.SetText(5, settings.OuterAdd.ToString());
-            item.SetText(6, keyCount.ToString());
+            item.SetChecked(0, true);
+            item.SetText(1, path);
+            item.SetText(2, type);
+            item.SetText(3, settings.Idx.ToString());
+            item.SetText(4, settings.Multiplier.ToString());
+            item.SetText(5, settings.InnerAdd.ToString());
+            item.SetText(6, settings.OuterAdd.ToString());
+            item.SetText(7, keyCount.ToString());
 
-            item.SetEditable(2, true);
             item.SetEditable(3, true);
             item.SetEditable(4, true);
             item.SetEditable(5, true);
+            item.SetEditable(6, true);
 
-            item.SetMetadata(0, path);
+            item.SetMetadata(1, path);
         }
 
         _statusLabel.Text = $"已加载 {trackCount} 条轨道。";
@@ -244,13 +241,13 @@ public partial class TrackExporterDock : VBoxContainer
         if (item == null || _animationList.ItemCount == 0) return;
 
         var animName = _animationList.GetItemText(_animationList.Selected);
-        var path = item.GetMetadata(0).AsString();
+        var path = item.GetMetadata(1).AsString();
         var settings = GetSettings(animName, path);
 
-        settings.Idx = ParseInt(item.GetText(2), settings.Idx);
-        settings.Multiplier = ParseInt(item.GetText(3), settings.Multiplier);
-        settings.InnerAdd = ParseInt(item.GetText(4), settings.InnerAdd);
-        settings.OuterAdd = ParseInt(item.GetText(5), settings.OuterAdd);
+        settings.Idx = ParseInt(item.GetText(3), settings.Idx);
+        settings.Multiplier = ParseInt(item.GetText(4), settings.Multiplier);
+        settings.InnerAdd = ParseInt(item.GetText(5), settings.InnerAdd);
+        settings.OuterAdd = ParseInt(item.GetText(6), settings.OuterAdd);
 
         SaveSettings(animName, path, settings);
         _config.Save();

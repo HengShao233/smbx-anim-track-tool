@@ -38,7 +38,18 @@
 				],
 				"problemMatcher": "$msCompile"
 			},
-
+			{
+				"label": "build csharp project",
+				"command": "dotnet",
+				"type": "process",
+				"args": [
+					"build",
+					"${workspaceFolder}/gd_project/gd_project.sln",
+					"/property:GenerateFullPaths=true",
+					"/consoleloggerparameters:NoSummary;ForceNoAlign"
+				],
+				"problemMatcher": "$msCompile"
+			},
 		]
 	}
 }
