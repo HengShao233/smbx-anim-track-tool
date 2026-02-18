@@ -200,6 +200,15 @@ public partial class TrackExporterDock : VBoxContainer
             return;
         }
 
+        var titleItem = _trackTree.CreateItem(root);
+        titleItem.SetText(0, "轨道");
+        titleItem.SetText(1, "类型");
+        titleItem.SetText(2, "索引");
+        titleItem.SetText(3, "乘数");
+        titleItem.SetText(4, "内加");
+        titleItem.SetText(5, "外加");
+        titleItem.SetText(6, "键数");
+
         var trackCount = animation.GetTrackCount();
         for (var i = 0; i < trackCount; i++)
         {
