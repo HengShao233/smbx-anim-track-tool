@@ -1,1 +1,3 @@
-gd_engine/
+gd_engine*/
+[ignore]*/
+.vscode/
