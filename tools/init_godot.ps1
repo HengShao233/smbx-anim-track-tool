@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-$exe = Get-ChildItem -Path './gd_engine' -Filter 'godot_*stable_mono_win64_console.exe' -File -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -First 1
+$exe = Get-ChildItem -Path './gd_engine' -Filter 'godot_*stable_mono_win64.exe' -File -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -First 1
 if ($exe) {
   Write-Host ("Godot console exe found: {0}" -f $exe.FullName)
   exit 0
