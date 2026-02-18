@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://osisaca4xn84"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7dm0k"]
+
+[sub_resource type="Animation" id="Animation_ig7tw"]
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(95, 91.99997), Vector2(500, 92)]
+}
+
+[sub_resource type="Animation" id="Animation_7dm0k"]
+resource_name = "test"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.033333335, 1.8333334),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(95, 91.99997), Vector2(500, 92)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ig7tw"]
+_data = {
+&"RESET": SubResource("Animation_ig7tw"),
+&"test": SubResource("Animation_7dm0k")
+}
+
+[node name="SceneRoot" type="Node2D" unique_id=234724630]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=660971228]
+position = Vector2(95, 91.99997)
+scale = Vector2(95.99999, 96.00003)
+texture = SubResource("PlaceholderTexture2D_7dm0k")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=781625270]
+libraries/ = SubResource("AnimationLibrary_ig7tw")
