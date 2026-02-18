@@ -6,47 +6,38 @@
 	],
 	"settings": {
 		"editor.tabSize": 2,
-		"workbench.editor.wrapTabs": true
+		"workbench.editor.wrapTabs": true,
+		"dotnet.defaultSolution": "gd_project/gd_project.sln"
 	},
 	"tasks": {
 		"version": "2.0.0",
 		"tasks": [
 			{
-				"label": "build",
-				"command": "dotnet",
-				"type": "process",
+				"label": "init project",
+				"type": "shell",
+				"command": "powershell",
 				"args": [
-					"build",
-					"${workspaceFolder}/gd_project/gd_project.sln",
-					"/property:GenerateFullPaths=true",
-					"/consoleloggerparameters:NoSummary;ForceNoAlign"
+					"-NoProfile",
+					"-ExecutionPolicy",
+					"Bypass",
+					"-File",
+					"./tools/init_godot.ps1"
 				],
 				"problemMatcher": "$msCompile"
 			},
 			{
-				"label": "publish",
-				"command": "dotnet",
-				"type": "process",
+				"label": "launch project",
+				"type": "shell",
+				"command": "powershell",
 				"args": [
-					"publish",
-					"${workspaceFolder}/gd_project/gd_project.sln",
-					"/property:GenerateFullPaths=true",
-					"/consoleloggerparameters:NoSummary;ForceNoAlign"
+					"-NoProfile",
+					"-ExecutionPolicy",
+					"Bypass",
+					"-Command",
+					"& { $exe = Get-ChildItem -Path ./gd_engine -Filter 'godot_*stable_mono_win64_console.exe' -File | Sort-Object Name | Select-Object -First 1; if (-not $exe) { throw 'Godot console exe not found in ./gd_engine' }; & $exe.FullName './gd_project/project.godot' }"
 				],
 				"problemMatcher": "$msCompile"
 			},
-			{
-				"label": "watch",
-				"command": "dotnet",
-				"type": "process",
-				"args": [
-					"watch",
-					"run",
-					"--project",
-					"${workspaceFolder}/gd_project/gd_project.sln"
-				],
-				"problemMatcher": "$msCompile"
-			}
 		]
 	}
 }
