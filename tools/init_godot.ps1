@@ -22,6 +22,23 @@ if ($href -notmatch '^https?://') { $href = 'https://download.godotengine.org' +
 
 
 $zip = Join-Path $env:TEMP 'godot_mono_win64.zip'
+$extract = Join-Path $env:TEMP 'godot_mono_extract'
+
 Invoke-WebRequest -UseBasicParsing $href -OutFile $zip
-Expand-Archive -Force $zip './gd_engine'
+if (Test-Path $extract) {
+  Remove-Item $extract -Recurse -Force
+}
+Expand-Archive -Force $zip $extract
+
+$entries = Get-ChildItem -Path $extract
+if ($entries.Count -eq 1 -and $entries[0].PSIsContainer) {
+  $sourceRoot = $entries[0].FullName
+} else {
+  $sourceRoot = $extract
+}
+
+Copy-Item -Path (Join-Path $sourceRoot '*') -Destination './gd_engine' -Recurse -Force
+
 Remove-Item $zip -Force
+Remove-Item $extract -Recurse -Force
+
