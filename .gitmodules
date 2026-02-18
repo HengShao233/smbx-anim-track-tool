@@ -1,0 +1,3 @@
+[submodule "utils/binary-ascii"]
+	path = utils/binary-ascii
+	url = https://github.com/XiaoDouXd/binary-ascii.git
