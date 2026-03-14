@@ -1,0 +1,252 @@
+﻿#nullable enable
+
+using System.Collections.Generic;
+using System.Text;
+using Godot;
+
+namespace gd_project.addons.smbx_track_exporter;
+
+// ReSharper disable UnusedMember.Local
+
+public partial class TrackExporterDock
+{
+    private readonly struct ExportAnimationData(string animName)
+    {
+        public readonly struct ExportTrackData(byte[] data, string trackPath, int idx, int sourceLength)
+        {
+            public readonly int Idx = idx;
+            public readonly byte[] Data = data;
+            public readonly string TrackPath = trackPath;
+            public readonly int SourceLength = sourceLength;
+
+            public static ExportTrackData Empty(string path, int idx) => new ([], path, idx, 0);
+        }
+
+        public readonly string AnimName = animName;
+        public readonly List<ExportTrackData> Tracks = [];
+    }
+    
+    private readonly struct ExportTemperateData(List<ushort> data, string trackPath, in TrackSettings settings)
+    {
+        public readonly string TrackPath = trackPath;
+        public readonly List<ushort> SourceData = data;
+        public readonly TrackSettings Settings = settings;
+        
+        public bool IsEmpty => SourceData.Count <= 0;
+        
+        public static ExportTemperateData Empty(string path, in TrackSettings settings) => new([], path, settings);
+    }
+
+    private void Export()
+    {
+        if (_player == null || _animationList.ItemCount == 0)
+        {
+            _statusLabel.Text = "⚠ 请先选择 AnimationPlayer 与动画";
+            return;
+        }
+
+        var outputPath = _exportPath.Text;
+        if (string.IsNullOrWhiteSpace(outputPath))
+        {
+            _statusLabel.Text = "⚠ 请选择导出路径";
+            return;
+        }
+
+        for (var idx = 0; idx < _animationList.ItemCount; idx++)
+        {
+            var animName = _animationList.GetItemText(idx);
+            ExportSingle(animName, outputPath);
+        }
+    }
+    
+    private void ExportSingle(string animName, string outputPath)
+    {
+        if (_player == null)
+        {
+            _statusLabel.Text = "⚠ AnimationPlayer 不存在";
+            return;
+        }
+        
+        var animation = _player.GetAnimation(animName);
+        if (animation == null)
+        {
+            _statusLabel.Text = "⚠ 动画不存在";
+            return;
+        }
+
+        var encoded = ExportAnimation(animation, animName);
+        if (encoded.Tracks.Count <= 0)
+        {
+            _statusLabel.Text = "🙅‍导出失败：请检查轨道设置";
+            return;
+        }
+
+        var tracks = encoded.Tracks;
+        var finalBytes = new List<byte> { Encoder.Encode((byte)tracks.Count) };
+        var offset = 2 * tracks.Count + 1 + 1; // 基础偏移, tea script 的下标从 1 开始
+        foreach (var track in tracks)
+        {
+            var (a, b, c) = Encoder.Encode(track.SourceLength <= 0 ? 0 : offset);
+            finalBytes.Add(a);
+            finalBytes.Add(b);
+            finalBytes.Add(c);
+            offset += track.SourceLength;
+        }
+        foreach (var track in tracks) finalBytes.AddRange(track.Data);
+        
+        var script = BuildSmtScript(animName, finalBytes.ToArray());
+        using var file = FileAccess.Open(outputPath, FileAccess.ModeFlags.Write);
+        file.StoreString(script);
+
+        _statusLabel.Text = $"👌导出完成: {animName}";
+    }
+    
+    private ExportAnimationData ExportAnimation(Animation animation, string animName)
+    {
+        var trackCount = animation.GetTrackCount();
+        var tracks = new SortedDictionary<int, ExportTemperateData>();
+
+        var fps = animation.Step > 0 ? Mathf.RoundToInt(1f / animation.Step) : 60;
+        fps = Mathf.Clamp(fps, 1, 240);
+        var totalFrames = Mathf.Clamp(Mathf.RoundToInt(animation.Length * fps), 0, 4095);
+
+        for (var trackIdx = 0; trackIdx < trackCount; trackIdx++)
+        {
+            var path = animation.TrackGetPath(trackIdx).ToString();
+            var settings = GetSettings(animName, path);
+            if (settings.Idx < 0)
+            {
+                GD.Print($"轨道未设置 idx, 已跳过: {path}, anim: {animName}");
+                continue;
+            }
+            
+            if (animation.TrackGetType(trackIdx) != Animation.TrackType.Value)
+            {
+                GD.Print($"跳过非 Value 轨道: {animation.TrackGetPath(trackIdx)}, anim: {animName}");
+                tracks.Add(settings.Idx, ExportTemperateData.Empty(path, settings));
+                continue;
+            }
+
+            var keyCount = animation.TrackGetKeyCount(trackIdx);
+            if (keyCount == 0)
+            {
+                GD.Print($"轨道无关键帧, 已跳过: {path}, anim: {animName}");
+                tracks.Add(settings.Idx, ExportTemperateData.Empty(path, settings));
+                continue;
+            }
+
+            var data = new List<ushort>();
+            var usedKeys = 0;
+            
+            // 统计
+            var valueList = new List<Value4d>();
+            var max = 0d;
+            var min = 0d;
+            var dimension = 0;
+            for (var keyIdx = 0; keyIdx < keyCount; keyIdx++)
+            {
+                var keyValue = animation.TrackGetKeyValue(trackIdx, keyIdx);
+                var v = Value4d.FromVariant(keyValue, settings);
+                if (v.Dimension <= 0)
+                {
+                    GD.Print($"轨道关键帧非数值, 已跳过: {path} @ {keyIdx}, anim: {animName}");
+                    break;
+                }
+
+                v.KeyIdx = keyIdx;
+                dimension = v.Dimension;
+                Value4d.UpdateExtremum(ref max, ref min, v);
+                valueList.Add(v);
+            }
+
+            var valueScale = TrackSettings.ValueScale.GetValueScale(max, min);
+            foreach (var val in valueList)
+            {
+                var keyIdx = val.KeyIdx;
+
+                var time = animation.TrackGetKeyTime(trackIdx, keyIdx);
+                var frame = Mathf.Clamp(Mathf.RoundToInt((float)time * fps), 1, 4096);
+                var interp = MapInterpolation(animation.TrackGetInterpolationType(trackIdx));
+                var keySetting = EncodeKeyframeSetting(interp, frame);
+                var nor = Value4d.Normalize(val, valueScale);
+
+                data.Add(keySetting);
+                nor.WriteTo(data);
+                usedKeys++;
+            }
+
+            if (usedKeys == 0)
+            {
+                GD.Print($"轨道未产生有效关键帧，已跳过: {path}, anim: {animName}");
+                continue;
+            }
+
+            var header = new List<ushort>
+            {
+                Encoder.ToUShort(totalFrames),
+                Encoder.ToUShort(fps),
+                Encoder.ToUShort(usedKeys),
+                (ushort)valueScale.InnerMultiplier,
+                (ushort)valueScale.OuterMultiplier,
+                (ushort)valueScale.InnerAddition,
+                (ushort)valueScale.OuterAddition,
+                (ushort)dimension
+            };
+            header.AddRange(data);
+            tracks[settings.Idx] = new ExportTemperateData(header, path, settings);
+        }
+
+        if (tracks.Count == 0)
+        {
+            GD.Print($"没有可导出的轨道, anim: {animName}");
+            return new ExportAnimationData(animName);
+        }
+
+        var ret = new ExportAnimationData(animName);
+        foreach (var track in tracks.Values)
+        {
+            // 填充空轨道
+            while (track.Settings.Idx > ret.Tracks.Count)
+                ret.Tracks.Add(ExportAnimationData.ExportTrackData.Empty("", ret.Tracks.Count));
+            if (track.IsEmpty)
+            {
+                ret.Tracks.Add(ExportAnimationData.ExportTrackData.Empty(track.TrackPath, track.Settings.Idx));
+                continue;
+            }
+            var d = Encoder.Encode(track.SourceData);
+            ret.Tracks.Add(new ExportAnimationData.ExportTrackData(d, track.TrackPath, track.Settings.Idx, track.SourceData.Count));
+        }
+        return ret;
+    }
+
+    private static string BuildSmtScript(string animName, byte[] encoded)
+    {
+        var ascii = Encoding.ASCII.GetString(encoded);
+        var sb = new StringBuilder();
+        sb.AppendLine("' SMBX Track Script (generated by Godot)");
+        sb.AppendLine($"' Animation: {animName}");
+        sb.AppendLine("' Paste TRACK_DATA into your TeaScript loader");
+        sb.AppendLine("Dim TRACK_DATA As String = \"" + ascii + "\"");
+        return sb.ToString();
+    }
+
+    private static ushort EncodeKeyframeSetting(int interp, int frame)
+    {
+        var mode = Mathf.Clamp(interp, 0, 3);
+        var f = Mathf.Clamp(frame - 1, 0, 4095);
+        return (ushort)((0b11 << 14) | (mode << 12) | f);
+    }
+
+    private static int MapInterpolation(Animation.InterpolationType type)
+    {
+        return type switch
+        {
+            Animation.InterpolationType.Nearest => 0,
+            Animation.InterpolationType.Linear => 1,
+            Animation.InterpolationType.LinearAngle => 2,
+            Animation.InterpolationType.Cubic => 3,
+            Animation.InterpolationType.CubicAngle => 2,
+            _ => 1
+        };
+    }
+}

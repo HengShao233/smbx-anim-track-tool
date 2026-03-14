@@ -1,5 +1,7 @@
 using Godot;
 
+namespace gd_project.addons.smbx_track_exporter;
+
 [Tool]
 public partial class TrackExporterPlugin : EditorPlugin
 {
