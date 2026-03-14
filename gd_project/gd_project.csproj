@@ -8,5 +8,9 @@
   <ItemGroup>
     <ProjectReference Include="..\utils\binary-ascii\AscBin\AscBin\AscBin.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <GodotScanSubNamespaces>true</GodotScanSubNamespaces>
+  </PropertyGroup>
 </Project>
 

@@ -13,7 +13,16 @@ config_version=5
 config/name="gd_project"
 run/main_scene="uid://osisaca4xn84"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
+boot_splash/show_image=false
+boot_splash/stretch_mode=0
+boot_splash/use_filter=false
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=800
+window/size/viewport_height=600
+window/size/resizable=false
 
 [dotnet]
 

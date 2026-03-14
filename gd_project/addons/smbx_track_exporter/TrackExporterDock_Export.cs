@@ -106,8 +106,9 @@ public partial class TrackExporterDock
         var trackCount = animation.GetTrackCount();
         var tracks = new SortedDictionary<int, ExportTemperateData>();
 
-        var fps = animation.Step > 0 ? Mathf.RoundToInt(1f / animation.Step) : 60;
-        fps = Mathf.Clamp(fps, 1, 240);
+        // var fps = animation.Step > 0 ? Mathf.RoundToInt(1f / animation.Step) : 60;
+        // fps = Mathf.Clamp(fps, 1, 240);
+        const int fps = 60; // fps 固定为 60
         var totalFrames = Mathf.Clamp(Mathf.RoundToInt(animation.Length * fps), 0, 4095);
 
         for (var trackIdx = 0; trackIdx < trackCount; trackIdx++)
