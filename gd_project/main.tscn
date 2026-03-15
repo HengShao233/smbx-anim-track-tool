@@ -1,10 +1,240 @@
-[gd_scene format=3 uid="uid://osisaca4xn84"]
+[gd_scene format=4 uid="uid://osisaca4xn84"]
 
 [ext_resource type="Texture2D" uid="uid://bjgc6bvrlkp61" path="res://textures/white.png" id="1_0xm2m"]
 [ext_resource type="Texture2D" uid="uid://cuuvmqhxl7ulj" path="res://textures/x1.png" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://4bkmp2i1w5g3" path="res://utils/NodeConnectionLine.cs" id="3_h2yge"]
+[ext_resource type="TileSet" uid="uid://dj3xa1voslh0i" path="res://maps/grid.tres" id="4_1bvp3"]
+
+[sub_resource type="Animation" id="Animation_h2yge"]
+resource_name = "Idle"
+length = 4.0333333
+loop_mode = 1
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anim_root/body_root:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("anim_root/body_root/arm_left/arm:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-21, -25)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("anim_root/body_root/arm_right/arm:position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(47, -57)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("anim_root/body_root/arm_left/hand:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-51, -2)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("anim_root/body_root/arm_right/hand:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(17, -30)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("anim_root/body_root/leg_left/knee_left:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-25, 21)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("anim_root/body_root/leg_right/knee_right:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(18, 21)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("anim_root/body_root/leg_left/foot_left:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-4, 78)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("anim_root/body_root/leg_right/foot_right:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(13, 79)]
+}
+
+[sub_resource type="Animation" id="Animation_1bvp3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anim_root/body_root:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("anim_root/body_root/arm_left/arm:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-29, -35)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("anim_root/body_root/arm_right/arm:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(32, -31)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("anim_root/body_root/arm_left/hand:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-51, -2)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("anim_root/body_root/arm_right/hand:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(37, 7)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("anim_root/body_root/leg_left/knee_left:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-26, 28)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("anim_root/body_root/leg_right/knee_right:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(23, 27)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("anim_root/body_root/leg_left/foot_left:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-35, 76)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("anim_root/body_root/leg_right/foot_right:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(28, 78)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ig7tw"]
+_data = {
+&"Idle": SubResource("Animation_h2yge"),
+&"RESET": SubResource("Animation_1bvp3")
+}
 
 [node name="SceneRoot" type="Node2D" unique_id=234724630]
 
@@ -35,7 +265,7 @@ metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
 [node name="arm_left1" type="Line2D" parent="anim_root/view/lines" unique_id=572424126]
-points = PackedVector2Array(-47, -124, -93, -36)
+points = PackedVector2Array(-7, -58, -21, -25)
 width = 2.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("3_h2yge")
@@ -43,7 +273,7 @@ StartNodePath = NodePath("../../../body_root/shoulder/shoulder_left")
 EndNodePath = NodePath("../../../body_root/arm_left/arm")
 
 [node name="arm_left2" type="Line2D" parent="anim_root/view/lines" unique_id=301923625]
-points = PackedVector2Array(-93, -36, -189, 20)
+points = PackedVector2Array(-21, -25, -51, -2)
 width = 2.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("3_h2yge")
@@ -51,7 +281,7 @@ StartNodePath = NodePath("../../../body_root/arm_left/arm")
 EndNodePath = NodePath("../../../body_root/arm_left/hand")
 
 [node name="arm_right1" type="Line2D" parent="anim_root/view/lines" unique_id=1965714090]
-points = PackedVector2Array(30, -148, 100, -34)
+points = PackedVector2Array(17, -70, 47, -57)
 width = 2.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("3_h2yge")
@@ -59,7 +289,7 @@ StartNodePath = NodePath("../../../body_root/shoulder/shoulder_right")
 EndNodePath = NodePath("../../../body_root/arm_right/arm")
 
 [node name="arm_right2" type="Line2D" parent="anim_root/view/lines" unique_id=1067881961]
-points = PackedVector2Array(100, -34, 119, 44)
+points = PackedVector2Array(47, -57, 17, -30)
 width = 2.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("3_h2yge")
@@ -67,7 +297,7 @@ StartNodePath = NodePath("../../../body_root/arm_right/arm")
 EndNodePath = NodePath("../../../body_root/arm_right/hand")
 
 [node name="leg_left1" type="Line2D" parent="anim_root/view/lines" unique_id=177124852]
-points = PackedVector2Array(-22, 16, -31, 76)
+points = PackedVector2Array(-2, -9, -25, 21)
 width = 2.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("3_h2yge")
@@ -75,7 +305,7 @@ StartNodePath = NodePath("../../../body_root/hip/hip_left")
 EndNodePath = NodePath("../../../body_root/leg_left/knee_left")
 
 [node name="leg_left2" type="Line2D" parent="anim_root/view/lines" unique_id=1973378451]
-points = PackedVector2Array(-31, 76, -40, 163)
+points = PackedVector2Array(-25, 21, -4, 78)
 width = 2.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("3_h2yge")
@@ -83,7 +313,7 @@ StartNodePath = NodePath("../../../body_root/leg_left/knee_left")
 EndNodePath = NodePath("../../../body_root/leg_left/foot_left")
 
 [node name="leg_right1" type="Line2D" parent="anim_root/view/lines" unique_id=1868286249]
-points = PackedVector2Array(54, 23, 73, 101)
+points = PackedVector2Array(15, -14, 18, 21)
 width = 2.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("3_h2yge")
@@ -91,12 +321,17 @@ StartNodePath = NodePath("../../../body_root/hip/hip_right")
 EndNodePath = NodePath("../../../body_root/leg_right/knee_right")
 
 [node name="leg_right2" type="Line2D" parent="anim_root/view/lines" unique_id=178184969]
-points = PackedVector2Array(73, 101, 70, 223)
+points = PackedVector2Array(18, 21, 13, 79)
 width = 2.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/leg_right/knee_right")
 EndNodePath = NodePath("../../../body_root/leg_right/foot_right")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="anim_root/view/lines" unique_id=1835011269]
+self_modulate = Color(0, 0, 0, 0.44705883)
+tile_map_data = PackedByteArray("AAD5/wMAAAAAAAAAAAD9/wMAAAAAAAAAAAABAAMAAAAAAAAAAAD6/wMAAAAAAAAAAAD7/wMAAAAAAAAAAAD8/wMAAAAAAAAAAAD+/wMAAAAAAAAAAAD//wMAAAAAAAAAAAAAAAMAAAAAAAAAAAD5/wQAAAAAAAAAAAD6/wQAAAAAAAAAAAD7/wQAAAAAAAAAAAD8/wQAAAAAAAAAAAD9/wQAAAAAAAAAAAD+/wQAAAAAAAAAAAD//wQAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAD5//v/AAAAAAAAAAD5//z/AAAAAAAAAAD5//3/AAAAAAAAAAD5//7/AAAAAAAAAAD5////AAAAAAAAAAD5/wAAAAAAAAAAAAD5/wEAAAAAAAAAAAD5/wIAAAAAAAAAAAD6//v/AAAAAAAAAAD6//z/AAAAAAAAAAD6//3/AAAAAAAAAAD6//7/AAAAAAAAAAD6////AAAAAAAAAAD6/wAAAAAAAAAAAAD6/wEAAAAAAAAAAAD6/wIAAAAAAAAAAAD7//v/AAAAAAAAAAD7//z/AAAAAAAAAAD7//3/AAAAAAAAAAD7//7/AAAAAAAAAAD7////AAAAAAAAAAD7/wAAAAAAAAAAAAD7/wEAAAAAAAAAAAD7/wIAAAAAAAAAAAD8//v/AAAAAAAAAAD8//z/AAAAAAAAAAD8//3/AAAAAAAAAAD8//7/AAAAAAAAAAD8////AAAAAAAAAAD8/wAAAAAAAAAAAAD8/wEAAAAAAAAAAAD8/wIAAAAAAAAAAAD9//v/AAAAAAAAAAD9//z/AAAAAAAAAAD9//3/AAAAAAAAAAD9//7/AAAAAAAAAAD9////AAAAAAAAAAD9/wAAAAAAAAAAAAD9/wEAAAAAAAAAAAD9/wIAAAAAAAAAAAD+//v/AAAAAAAAAAD+//z/AAAAAAAAAAD+//3/AAAAAAAAAAD+//7/AAAAAAAAAAD+////AAAAAAAAAAD+/wAAAAAAAAAAAAD+/wEAAAAAAAAAAAD+/wIAAAAAAAAAAAD///v/AAAAAAAAAAD///z/AAAAAAAAAAD///3/AAAAAAAAAAD///7/AAAAAAAAAAD/////AAAAAAAAAAD//wAAAAAAAAAAAAD//wEAAAAAAAAAAAD//wIAAAAAAAAAAAAAAPv/AAAAAAAAAAAAAPz/AAAAAAAAAAAAAP3/AAAAAAAAAAAAAP7/AAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAPv/AAAAAAAAAAABAPz/AAAAAAAAAAABAP3/AAAAAAAAAAABAP7/AAAAAAAAAAABAP//AAAAAAAAAAABAAAAAAAAAAAAAAABAAEAAAAAAAAAAAABAAIAAAAAAAAAAAACAPv/AAAAAAAAAAACAPz/AAAAAAAAAAACAP3/AAAAAAAAAAACAP7/AAAAAAAAAAACAP//AAAAAAAAAAACAAAAAAAAAAAAAAACAAEAAAAAAAAAAAACAAIAAAAAAAAAAAADAPv/AAAAAAAAAAADAPz/AAAAAAAAAAADAP3/AAAAAAAAAAADAP7/AAAAAAAAAAADAP//AAAAAAAAAAADAAAAAAAAAAAAAAADAAEAAAAAAAAAAAADAAIAAAAAAAAAAAAEAPv/AAAAAAAAAAAEAPz/AAAAAAAAAAAEAP3/AAAAAAAAAAAEAP7/AAAAAAAAAAAEAP//AAAAAAAAAAAEAAAAAAAAAAAAAAAEAAEAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAPv/AAAAAAAAAAAFAPz/AAAAAAAAAAAFAP3/AAAAAAAAAAAFAP7/AAAAAAAAAAAFAP//AAAAAAAAAAAFAAAAAAAAAAAAAAAFAAEAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAPv/AAAAAAAAAAAGAPz/AAAAAAAAAAAGAP3/AAAAAAAAAAAGAP7/AAAAAAAAAAAGAP//AAAAAAAAAAAGAAAAAAAAAAAAAAAGAAEAAAAAAAAAAAAGAAIAAAAAAAAAAAA=")
+tile_set = ExtResource("4_1bvp3")
 
 [node name="body_root" type="Node2D" parent="anim_root" unique_id=319002932]
 
@@ -104,7 +339,7 @@ EndNodePath = NodePath("../../../body_root/leg_right/foot_right")
 metadata/_edit_lock_ = true
 
 [node name="body_root-icon" type="Sprite2D" parent="anim_root/body_root/body_view" unique_id=1542423100]
-self_modulate = Color(0, 0, 0, 1)
+self_modulate = Color(0.9596363, 0.7945835, 0, 1)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("1_ig7tw")
 metadata/_edit_lock_ = true
@@ -113,20 +348,20 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="shoulder_left" type="Node2D" parent="anim_root/body_root/shoulder" unique_id=2123168306]
-position = Vector2(-47, -124)
+position = Vector2(-7, -58)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/shoulder/shoulder_left" unique_id=2105447000]
-self_modulate = Color(0, 0.6261214, 0.3495362, 1)
+self_modulate = Color(0.972549, 0.18039216, 0.29411766, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
 [node name="shoulder_right" type="Node2D" parent="anim_root/body_root/shoulder" unique_id=158989497]
-position = Vector2(30, -148)
+position = Vector2(17, -70)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/shoulder/shoulder_right" unique_id=1278414469]
-self_modulate = Color(0, 0.6261214, 0.3495362, 1)
+self_modulate = Color(0.972549, 0.18039216, 0.29411766, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
@@ -134,20 +369,20 @@ texture = ExtResource("1_ig7tw")
 metadata/_edit_lock_ = true
 
 [node name="hip_left" type="Node2D" parent="anim_root/body_root/hip" unique_id=1804955316]
-position = Vector2(-22, 16)
+position = Vector2(-2, -9)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/hip/hip_left" unique_id=2112474290]
-self_modulate = Color(0.2620799, 0.5319402, 1, 1)
+self_modulate = Color(0.9724286, 0.18222058, 0.2950865, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
 [node name="hip_right" type="Node2D" parent="anim_root/body_root/hip" unique_id=1096369400]
-position = Vector2(54, 23)
+position = Vector2(15, -14)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/hip/hip_right" unique_id=1588617910]
-self_modulate = Color(0.2620799, 0.5319402, 1, 1)
+self_modulate = Color(0.972549, 0.18039216, 0.29411766, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
@@ -155,7 +390,7 @@ texture = ExtResource("1_ig7tw")
 metadata/_edit_lock_ = true
 
 [node name="arm" type="Node2D" parent="anim_root/body_root/arm_left" unique_id=576292325]
-position = Vector2(-93, -36)
+position = Vector2(-29, -35)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/arm_left/arm" unique_id=7100915]
@@ -163,8 +398,14 @@ self_modulate = Color(0, 0.6261214, 0.3495362, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
+[node name="Label" type="Label" parent="anim_root/body_root/arm_left/arm" unique_id=70083092]
+self_modulate = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "1"
+
 [node name="hand" type="Node2D" parent="anim_root/body_root/arm_left" unique_id=1467893081]
-position = Vector2(-189, 20)
+position = Vector2(-51, -2)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/arm_left/hand" unique_id=2012675179]
@@ -172,11 +413,17 @@ self_modulate = Color(0, 0.6261214, 0.3495362, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
+[node name="Label" type="Label" parent="anim_root/body_root/arm_left/hand" unique_id=1399407282]
+self_modulate = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "3"
+
 [node name="arm_right" type="Node2D" parent="anim_root/body_root" unique_id=1348226913]
 metadata/_edit_lock_ = true
 
 [node name="arm" type="Node2D" parent="anim_root/body_root/arm_right" unique_id=1761532227]
-position = Vector2(100, -34)
+position = Vector2(32, -31)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/arm_right/arm" unique_id=3136942]
@@ -184,8 +431,14 @@ self_modulate = Color(0, 0.6261214, 0.3495362, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
+[node name="Label" type="Label" parent="anim_root/body_root/arm_right/arm" unique_id=146653510]
+self_modulate = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "2"
+
 [node name="hand" type="Node2D" parent="anim_root/body_root/arm_right" unique_id=867754072]
-position = Vector2(119, 44)
+position = Vector2(37, 7)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/arm_right/hand" unique_id=580197263]
@@ -193,11 +446,17 @@ self_modulate = Color(0, 0.6261214, 0.3495362, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
+[node name="Label" type="Label" parent="anim_root/body_root/arm_right/hand" unique_id=842581078]
+self_modulate = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "4"
+
 [node name="leg_left" type="Node2D" parent="anim_root/body_root" unique_id=713236747]
 metadata/_edit_lock_ = true
 
 [node name="knee_left" type="Node2D" parent="anim_root/body_root/leg_left" unique_id=2082554045]
-position = Vector2(-31, 76)
+position = Vector2(-26, 28)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/leg_left/knee_left" unique_id=199036058]
@@ -205,8 +464,14 @@ self_modulate = Color(0.2620799, 0.5319402, 1, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
+[node name="Label" type="Label" parent="anim_root/body_root/leg_left/knee_left" unique_id=1555740511]
+self_modulate = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "5"
+
 [node name="foot_left" type="Node2D" parent="anim_root/body_root/leg_left" unique_id=1351258490]
-position = Vector2(-40, 163)
+position = Vector2(-35, 76)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/leg_left/foot_left" unique_id=1844678542]
@@ -214,11 +479,17 @@ self_modulate = Color(0.2620799, 0.5319402, 1, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
+[node name="Label" type="Label" parent="anim_root/body_root/leg_left/foot_left" unique_id=785758261]
+self_modulate = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "7"
+
 [node name="leg_right" type="Node2D" parent="anim_root/body_root" unique_id=65830614]
 metadata/_edit_lock_ = true
 
 [node name="knee_right" type="Node2D" parent="anim_root/body_root/leg_right" unique_id=862925249]
-position = Vector2(73, 101)
+position = Vector2(23, 27)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/leg_right/knee_right" unique_id=188222643]
@@ -226,11 +497,23 @@ self_modulate = Color(0.2620799, 0.5319402, 1, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
 
+[node name="Label" type="Label" parent="anim_root/body_root/leg_right/knee_right" unique_id=1813251049]
+self_modulate = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "6"
+
 [node name="foot_right" type="Node2D" parent="anim_root/body_root/leg_right" unique_id=1397530242]
-position = Vector2(70, 223)
+position = Vector2(28, 78)
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/leg_right/foot_right" unique_id=1728430335]
 self_modulate = Color(0.2620799, 0.5319402, 1, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_ig7tw")
+
+[node name="Label" type="Label" parent="anim_root/body_root/leg_right/foot_right" unique_id=944199980]
+self_modulate = Color(0, 0, 0, 1)
+offset_right = 40.0
+offset_bottom = 23.0
+text = "8"

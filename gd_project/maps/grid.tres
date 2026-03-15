@@ -1,0 +1,20 @@
+[gd_resource type="TileSet" format=3 uid="uid://dj3xa1voslh0i"]
+
+[ext_resource type="Texture2D" uid="uid://b1o3hjpdokrxf" path="res://textures/grid.png" id="1_ccvv2"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f567h"]
+resource_name = "格子"
+texture = ExtResource("1_ccvv2")
+texture_region_size = Vector2i(64, 64)
+2:0/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+2:3/0 = 0
+0:0/0 = 0
+
+[resource]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_f567h")

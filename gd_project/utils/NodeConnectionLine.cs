@@ -14,30 +14,45 @@ public partial class NodeConnectionLine : Line2D
 {
     [ExportCategory("连接设置")]
     [Export]
-    public NodePath? StartNodePath { get; set; }
+    public NodePath? StartNodePath
+    {
+        get => _startNodePath;
+        set
+        {
+            ClearConnectStart();
+            _startNodePath = value;
+            UpdateLinePosition();
+        }
+    }
 
     [Export]
-    public NodePath? EndNodePath { get; set; }
+    public NodePath? EndNodePath
+    {
+        get => _endNodePath;
+        set
+        {
+            ClearReconnectEnd();
+            _endNodePath = value;
+            UpdateLinePosition();
+        }
+    }
 
     private Node2D? _startNode;
     private Node2D? _endNode;
 
+
+
     private Callable _onStartNodeExiting;
     private Callable _onEndNodeExiting;
 
-    public override void _EnterTree()
-    {
-        base._EnterTree();
-        GD.Print($"connection line node enter tree : {Name} ");
-    }
+    private NodePath? _endNodePath;
+    private NodePath? _startNodePath;
 
     public override void _Ready()
     {
         Points = new Vector2[2];
         ConnectNodes();
         UpdateLinePosition();
-
-        GD.Print($"connection line node ready : {Name} ");
 
         _onStartNodeExiting = Callable.From(OnStartNodeExiting);
         _onEndNodeExiting = Callable.From(OnEndNodeExiting);
@@ -82,14 +97,14 @@ public partial class NodeConnectionLine : Line2D
     private void OnStartNodeExiting()
     {
         if (_startNode == null) return;
-        _startNode.TreeExiting -= OnStartNodeExiting;
+        _startNode.Disconnect("tree_exiting", _onStartNodeExiting);
         _startNode = null;
     }
 
     private void OnEndNodeExiting()
     {
         if (_endNode == null) return;
-        _endNode.TreeExiting -= OnEndNodeExiting;
+        _endNode.Disconnect("tree_exiting", _onEndNodeExiting);
         _endNode = null;
     }
 
@@ -124,19 +139,23 @@ public partial class NodeConnectionLine : Line2D
         QueueRedraw();
     }
 
-    // 重新连接节点(当节点路径改变时调用)
-    public void Reconnect()
+    private void ClearConnectStart()
     {
-        if (_startNode != null)
-        {
-            _startNode.TreeExiting -= OnStartNodeExiting;
-        }
-        if (_endNode != null)
-        {
-            _endNode.TreeExiting -= OnEndNodeExiting;
-        }
+        _startNode?.Disconnect("tree_exiting", _onStartNodeExiting);
         _startNode = null;
+    }
+
+    private void ClearReconnectEnd()
+    {
+        _endNode?.Disconnect("tree_exiting", _onEndNodeExiting);
         _endNode = null;
+    }
+
+    // 重新连接节点(当节点路径改变时调用)
+    private void Reconnect()
+    {
+        ClearConnectStart();
+        ClearReconnectEnd();
         ConnectNodes();
         UpdateLinePosition();
     }
