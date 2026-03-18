@@ -10,6 +10,7 @@ namespace gd_project.Utils;
 /// 2. 设置 StartNodePath 和 EndNodePath 属性指向要连接的节点
 /// </summary>
 [Tool]
+[GlobalClass]
 public partial class NodeConnectionLine : Line2D
 {
     [ExportCategory("连接设置")]

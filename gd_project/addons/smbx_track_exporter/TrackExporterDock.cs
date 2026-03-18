@@ -13,6 +13,7 @@ public partial class TrackExporterDock : VBoxContainer
     private AnimationPlayer? _player;
     private readonly Label _playerLabel = new();
     private readonly OptionButton _animationList = new();
+    private readonly LineEdit _animPrefix = new();
     private readonly LineEdit _animTemplate = new();
     private readonly Tree _trackTree = new();
     private readonly ScrollContainer _scroll = new();
@@ -40,6 +41,18 @@ public partial class TrackExporterDock : VBoxContainer
     {
         var header = new Label { Text = "SMBX 轨道动画导出器" };
         AddChild(header);
+        
+        var nameBar = new HBoxContainer();
+        nameBar.AddChild(new Label { Text = "动画名前缀: " });
+        _animPrefix.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+        _animPrefix.Text = GetSettingPrefix();
+        _animPrefix.TextSubmitted += _ =>
+        {
+            SaveSettingPrefix(_animPrefix.Text);
+            _config.Save();
+        };
+        nameBar.AddChild(_animPrefix);
+        AddChild(nameBar);
 
         var selectBar = new HBoxContainer();
         var selectButton = new Button { Text = "使用当前选中的 AnimationPlayer" };
@@ -81,12 +94,12 @@ public partial class TrackExporterDock : VBoxContainer
         _trackTree.Columns = 5;
         _trackTree.HideRoot = true;
         _trackTree.SetColumnExpand(0, true);
-        _trackTree.SetColumnExpand(1, true);
+        _trackTree.SetColumnExpand(1, false);
         _trackTree.SetColumnExpand(2, true);
         _trackTree.SetColumnExpand(3, true);
         _trackTree.SetColumnExpand(4, true);
         _trackTree.SetColumnCustomMinimumWidth(0, 140);
-        _trackTree.SetColumnCustomMinimumWidth(1, 20);
+        _trackTree.SetColumnCustomMinimumWidth(1, 0);
         _trackTree.SetColumnCustomMinimumWidth(2, 50);
         _trackTree.SetColumnCustomMinimumWidth(3, 50);
         _trackTree.SetColumnCustomMinimumWidth(4, 50);
@@ -122,14 +135,14 @@ public partial class TrackExporterDock : VBoxContainer
         {
             _exportPath.Text = path;
             var animData = GetAnimationConfig();
-            animData["$export_path$"] = path;
+            animData["@export_path@"] = path;
         };
         AddChild(_fileDialog);
 
         // 初始化保存的配置
         {
             var animData = GetAnimationConfig();
-            if (animData.TryGetValue("$export_path$", out var path)) _exportPath.Text = path.ToString();
+            if (animData.TryGetValue("@export_path@", out var path)) _exportPath.Text = path.ToString();
         }
     }
 
@@ -159,6 +172,7 @@ public partial class TrackExporterDock : VBoxContainer
 
     private void RefreshAnimationList()
     {
+        _animPrefix.Text = GetSettingPrefix();
         _animationList.Clear();
         if (_player == null)
         {
@@ -214,14 +228,16 @@ public partial class TrackExporterDock : VBoxContainer
         for (var i = 0; i < trackCount; i++)
         {
             var item = _trackTree.CreateItem(root);
-            var path = animation.TrackGetPath(i).ToString();
+            var srcPath = animation.TrackGetPath(i);
+            var name = srcPath.GetName(srcPath.GetNameCount() - 1);
+            var path = srcPath.ToString();
             var type = animation.TrackGetType(i).ToString();
 
             var settings = GetSettings(animName, path);
 
             item.SetChecked(0, true);
             var idxInner = 0;
-            item.SetText(idxInner++, path);
+            item.SetText(idxInner++, $"{name}({path})");
             item.SetText(idxInner++, type);
             item.SetText(idxInner++, settings.Idx.ToString());
             item.SetText(idxInner++, settings.Multiplier);
@@ -274,7 +290,7 @@ public partial class TrackExporterDock : VBoxContainer
     private TrackSettings GetSettings(string animName, string trackPath)
     {
         animName = GetSettingTemplateName(animName);
-        trackPath = $"$track_settings${trackPath}";
+        trackPath = $"@track_settings@{trackPath}";
 
         var animations = GetAnimationConfig();
         if (!animations.ContainsKey(animName))
@@ -295,34 +311,56 @@ public partial class TrackExporterDock : VBoxContainer
     private string GetSettingTemplateName(string animName, bool pure = false)
     {
         var animations = GetAnimationConfig();
-        var srcName = $"$src_settings${animName}";
+        var srcName = $"@src_settings@{animName}";
         if (!animations.ContainsKey(srcName))
         {
             animations[srcName] = new Godot.Collections.Dictionary();
         }
         var animDict = (Godot.Collections.Dictionary)animations[srcName];
-        return !animDict.TryGetValue("$template$", out var templateNameVar)
+        return !animDict.TryGetValue("@template@", out var templateNameVar)
             ? pure ? "" : srcName
-            : pure ? templateNameVar.ToString() : $"$template${templateNameVar.ToString()}";
+            : pure ? templateNameVar.ToString() : $"@template@{templateNameVar.ToString()}";
     }
 
     private void SaveSettingTemplate(string animName, string? templateName)
     {
-        animName = $"$src_settings${animName}";
+        animName = $"@src_settings@{animName}";
         var animations = GetAnimationConfig();
         if (!animations.ContainsKey(animName))
         {
             animations[animName] = new Godot.Collections.Dictionary();
         }
         var animDict = (Godot.Collections.Dictionary)animations[animName];
-        if (string.IsNullOrWhiteSpace(templateName)) animDict.Remove("$template$");
-        else animDict["$template$"] = $"{templateName}";
+        if (string.IsNullOrWhiteSpace(templateName)) animDict.Remove("@template@");
+        else animDict["@template@"] = $"{templateName}";
+    }
+    
+    private string GetSettingPrefix()
+    {
+        var animName = _player?.Name.ToString() ?? "";
+        if (string.IsNullOrWhiteSpace(animName)) return "";
+        
+        var animations = GetAnimationConfig();
+        var key = $"@prefix@{animName}";
+        return animations.TryGetValue(key, out var value) ? value.ToString() : "";
+    }
+    
+    private void SaveSettingPrefix(string? prefixName)
+    {
+        var animName = _player?.Name.ToString() ?? "";
+        if (string.IsNullOrWhiteSpace(animName)) return;
+        
+        var animations = GetAnimationConfig();
+        var key = $"@prefix@{animName}";
+        prefixName = prefixName?.Trim() ?? "";
+        if (string.IsNullOrWhiteSpace(prefixName)) animations.Remove(key);
+        else animations[key] = $"{prefixName}";
     }
 
     private void SaveSettings(string animName, string trackPath, in TrackSettings settings)
     {
         animName = GetSettingTemplateName(animName);
-        trackPath = $"$track_settings${trackPath}";
+        trackPath = $"@track_settings@{trackPath}";
         
         var animations = GetAnimationConfig();
         if (!animations.ContainsKey(animName))

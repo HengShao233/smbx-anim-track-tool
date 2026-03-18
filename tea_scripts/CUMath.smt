@@ -54,7 +54,8 @@ Dim libCurve_tempF As Double = 0           ' 临时变量 F
 Dim libCurve_tempG As Double = 0           ' 临时变量 G
 Dim libCurve_tempH As Long = 0             ' 临时变量 H
 Dim libCurve_tempI As Long = 0             ' 临时变量 I
-Dim libCurve_tempJ As Long = 0             ' 临时变量 I
+Dim libCurve_tempJ As Long = 0             ' 临时变量 J
+Dim libCurve_tempK As Long = 0             ' 临时变量 K
 
 ' 计算中间量
 Dim libCurve_t As Double = 0               ' t
@@ -1021,15 +1022,27 @@ Export Script CUMath_Decode(s As String, start As Integer, length As Integer, ba
     libCurve_tempJ = 0
     If base <= 36 Then
         For libCurve_tempH = 1 To length Step 1
-            libCurve_tempJ += CUMath_Char36Code(Asc(Mid(s, start + libCurve_tempH, 1))) * CUMath_SimplePow(base, length - libCurve_tempH)
+            libCurve_tempK = CUMath_Char36Code(Asc(Mid(s, start + libCurve_tempH, 1)))
+            If libCurve_tempK < 0 Then
+                Return -1
+            End If
+            libCurve_tempJ += libCurve_tempK * CUMath_SimplePow(base, length - libCurve_tempH)
         Next
     ElseIf base <= 64 Then
         For libCurve_tempH = 0 To length Step 1
-            libCurve_tempJ += CUMath_Char64Code(Asc(Mid(s, start + libCurve_tempH, 1))) * CUMath_SimplePow(base, length - libCurve_tempH)
+            libCurve_tempK = CUMath_Char64Code(Asc(Mid(s, start + libCurve_tempH, 1)))
+            If libCurve_tempK < 0 Then
+                Return -1
+            End If
+            libCurve_tempJ += libCurve_tempK * CUMath_SimplePow(base, length - libCurve_tempH)
         Next
     ElseIf base <= 92 Then
         For libCurve_tempH = 0 To length Step 1
-            libCurve_tempJ += CUMath_Char92Code(Asc(Mid(s, start + libCurve_tempH, 1))) * CUMath_SimplePow(base, length - libCurve_tempH)
+            libCurve_tempK = CUMath_Char92Code(Asc(Mid(s, start + libCurve_tempH, 1)))
+            If libCurve_tempK < 0 Then
+                Return -1
+            End If
+            libCurve_tempJ += libCurve_tempK * CUMath_SimplePow(base, length - libCurve_tempH)
         Next
     End If
     Return libCurve_tempJ
@@ -1053,18 +1066,38 @@ End Script
 ' @param a 整数
 ' @param b 整数
 ' @return long 整数
-Export Script CUMath_AssembleInt(a As Integer, b As Integer, Return Long)
+Export Script CUMath_AssembleInt16(a As Integer, b As Integer, Return Long)
     libCurve_tempH = a And 65535
     libCurve_tempJ = b And 65535
     Return libCurve_tempJ or (libCurve_tempH << 16)
 End Script
 
+' 拼接两个整数
+' @param a 整数
+' @param b 整数
+' @return long 整数
+Export Script CUMath_AssembleUInt12(a As Integer, b As Integer, Return Long)
+    libCurve_tempH = a And 4095
+    libCurve_tempJ = b And 4095
+    Return libCurve_tempJ or (libCurve_tempH << 12)
+End Script
+
 ' 拆解整数
 ' @param value 整数
 ' @return 通过 CUMath_GetVecRetX 和 CUMath_GetVecRetY 获取结果
-Export Script CUMath_DisassembleInt(value As Long)
+Export Script CUMath_DisassembleInt16(value As Long)
     libCurve_tempH = (value >> 16) and 65535
     libCurve_tempJ = value And 65535
+    libCurve_retX = libCurve_tempH
+    libCurve_retY = libCurve_tempJ
+End Script
+
+' 拆解整数
+' @param value 整数
+' @return 通过 CUMath_GetVecRetX 和 CUMath_GetVecRetY 获取结果
+Export Script CUMath_DisassembleUInt12(value As Long)
+    libCurve_tempH = (value >> 12) and 4095
+    libCurve_tempJ = value And 4095
     libCurve_retX = libCurve_tempH
     libCurve_retY = libCurve_tempJ
 End Script
