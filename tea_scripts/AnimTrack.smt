@@ -166,7 +166,7 @@ Script AnimTrackInner_SeekFrame(frame As Integer, Return Integer)
                 AnimCommon_TempI2 = AnimCommon_TempI4 + 1
                 Continue
             End If
-    
+
             ' 小于 frame, 在左边
             AnimCommon_TempI3 = AnimCommon_TempI4 - 1
             Continue
@@ -261,11 +261,11 @@ Export Script AnimTrack_Internal_Decode(s As String, Return String)
 
     AnimCommon_TempS0 = ""
     AnimCommon_TempI1 = 2
-    Do While AnimCommon_TempI0 > 0
-        AnimCommon_TempS0 = AnimCommon_TempS0 + ChrW(CUMath_Decode(s, AnimCommon_TempI1, 3, 64))
+    Do While AnimCommon_TempI1 < AnimCommon_TempI0
+        AnimCommon_TempS0 = AnimCommon_TempS0 & ChrW(CUMath_Int16(CUMath_Decode(s, AnimCommon_TempI1, 3, 64)))
         AnimCommon_TempI1 = AnimCommon_TempI1 + 3
     Loop
-    Return ChrW(0) + AnimCommon_TempS0
+    Return ChrW(0) & AnimCommon_TempS0
 End Script
 
 ' 装载动画轨道集
