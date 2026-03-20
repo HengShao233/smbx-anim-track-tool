@@ -25,15 +25,15 @@ public partial class TrackExporterDock
         public readonly string AnimName = animName;
         public readonly List<ExportTrackData> Tracks = [];
     }
-    
+
     private readonly struct ExportTemperateData(List<ushort> data, string trackPath, in TrackSettings settings)
     {
         public readonly string TrackPath = trackPath;
         public readonly List<ushort> SourceData = data;
         public readonly TrackSettings Settings = settings;
-        
+
         public bool IsEmpty => SourceData.Count <= 0;
-        
+
         public static ExportTemperateData Empty(string path, in TrackSettings settings) => new([], path, settings);
     }
 
@@ -42,7 +42,7 @@ public partial class TrackExporterDock
         public readonly string Name = name;
         public readonly byte[] DataStr = dataStr;
     }
-    
+
     private void Export()
     {
         if (_player == null || _animationList.ItemCount == 0)
@@ -64,7 +64,7 @@ public partial class TrackExporterDock
             var animName = _animationList.GetItemText(idx);
             animList.Add(ExportSingle(animName));
         }
-        
+
         // 写入数据
         using var file = FileAccess.Open(outputPath, FileAccess.ModeFlags.Write);
         var sbNameList = new List<string>();
@@ -103,7 +103,7 @@ End Script");
         file.StoreString(sb.ToString());
         _statusLabel.Text = $"👌导出完成: {string.Join(',', sbNameList)}";
     }
-    
+
     private ExportScriptData ExportSingle(string animName)
     {
         if (_player == null)
@@ -111,7 +111,7 @@ End Script");
             _statusLabel.Text = "⚠ AnimationPlayer 不存在";
             return new ExportScriptData([], "");
         }
-        
+
         var animation = _player.GetAnimation(animName);
         if (animation == null)
         {
@@ -128,7 +128,7 @@ End Script");
 
         var tracks = encoded.Tracks;
         var finalBytes = new List<byte> { Encoder.Encode((byte)tracks.Count) };
-        var offset = 2 * tracks.Count + 1 + 1; // 基础偏移, tea script 的下标从 1 开始
+        var offset = tracks.Count + 3; // 基础偏移, tea script 的下标从 1 开始
         foreach (var track in tracks)
         {
             var (a, b, c) = Encoder.Encode(track.SourceLength <= 0 ? 0 : offset);
@@ -140,7 +140,7 @@ End Script");
         foreach (var track in tracks) finalBytes.AddRange(track.Data);
         return new ExportScriptData(finalBytes.ToArray(), animName);
     }
-    
+
     private ExportAnimationData ExportAnimation(Animation animation, string animName)
     {
         var trackCount = animation.GetTrackCount();
@@ -160,7 +160,7 @@ End Script");
                 GD.Print($"轨道未设置 idx, 已跳过: {path}, anim: {animName}");
                 continue;
             }
-            
+
             if (animation.TrackGetType(trackIdx) != Animation.TrackType.Value)
             {
                 GD.Print($"跳过非 Value 轨道: {animation.TrackGetPath(trackIdx)}, anim: {animName}");
@@ -178,7 +178,7 @@ End Script");
 
             var data = new List<ushort>();
             var usedKeys = 0;
-            
+
             // 统计
             var valueList = new List<Value4d>();
             var max = 0d;

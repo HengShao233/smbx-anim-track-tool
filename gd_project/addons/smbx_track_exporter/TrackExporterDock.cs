@@ -41,7 +41,7 @@ public partial class TrackExporterDock : VBoxContainer
     {
         var header = new Label { Text = "SMBX 轨道动画导出器" };
         AddChild(header);
-        
+
         var nameBar = new HBoxContainer();
         nameBar.AddChild(new Label { Text = "动画名前缀: " });
         _animPrefix.SizeFlagsHorizontal = SizeFlags.ExpandFill;
@@ -72,7 +72,7 @@ public partial class TrackExporterDock : VBoxContainer
         refreshButton.Pressed += () => RefreshTracks();
         animBar.AddChild(refreshButton);
         AddChild(animBar);
-        
+
         var templateBar = new HBoxContainer();
         templateBar.AddChild(new Label { Text = "配置模板: " });
         _animTemplate.SizeFlagsHorizontal = SizeFlags.ExpandFill;
@@ -127,7 +127,7 @@ public partial class TrackExporterDock : VBoxContainer
         _statusLabel.Text = "";
         _statusLabel.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         _scrollContent.AddChild(_statusLabel);
-        
+
         _fileDialog.Access = FileDialog.AccessEnum.Filesystem;
         _fileDialog.FileMode = FileDialog.FileModeEnum.SaveFile;
         _fileDialog.Filters = ["*.smt"];
@@ -263,18 +263,18 @@ public partial class TrackExporterDock : VBoxContainer
         var settings = GetSettings(animName, path);
 
         var idx = ParseInt(item.GetText(2), settings.Idx);
-        if (idx >= 64)
+        if (idx >= 63)
         {
-            idx = 63;
-            item.SetText(2, "63");
-            _statusLabel.Text = $"⚠ 轨道数不允许超过 64 条, {animName}";
+            idx = 62;
+            item.SetText(2, "62");
+            _statusLabel.Text = $"⚠ 轨道数不允许超过 63 条, {animName}";
         }
         _statusLabel.Text = "";
-        
+
         settings.Idx = idx;
         settings.Multiplier = item.GetText(3);
         settings.Template = item.GetText(4);
-        
+
         SaveSettings(animName, path, settings);
         _config.Save();
     }
@@ -334,22 +334,22 @@ public partial class TrackExporterDock : VBoxContainer
         if (string.IsNullOrWhiteSpace(templateName)) animDict.Remove("@template@");
         else animDict["@template@"] = $"{templateName}";
     }
-    
+
     private string GetSettingPrefix()
     {
         var animName = _player?.Name.ToString() ?? "";
         if (string.IsNullOrWhiteSpace(animName)) return "";
-        
+
         var animations = GetAnimationConfig();
         var key = $"@prefix@{animName}";
         return animations.TryGetValue(key, out var value) ? value.ToString() : "";
     }
-    
+
     private void SaveSettingPrefix(string? prefixName)
     {
         var animName = _player?.Name.ToString() ?? "";
         if (string.IsNullOrWhiteSpace(animName)) return;
-        
+
         var animations = GetAnimationConfig();
         var key = $"@prefix@{animName}";
         prefixName = prefixName?.Trim() ?? "";
@@ -361,7 +361,7 @@ public partial class TrackExporterDock : VBoxContainer
     {
         animName = GetSettingTemplateName(animName);
         trackPath = $"@track_settings@{trackPath}";
-        
+
         var animations = GetAnimationConfig();
         if (!animations.ContainsKey(animName))
         {

@@ -117,14 +117,11 @@ Script AnimTrackInner_LoadTrack(track As Integer, Return Integer)
     If Anim_TrackCount <= 0 Then
         Return -1
     End If
-    AnimCommon_TempI0 = AscW(Mid(Anim_Source, track * 2 + 3, 1)) ' high byte
-    AnimCommon_TempI1 = AscW(Mid(Anim_Source, track * 2 + 4, 1)) ' low byte
-    Track_StartPoint = CUMath_AssembleInt16(AnimCommon_TempI0, AnimCommon_TempI1)
+    Track_StartPoint = CUMath_UInt16(AscW(Mid(Anim_Source, track + 3, 1)))
 
     If 0 = Track_StartPoint Then
         Return -1
     End If
-    Track_StartPoint = Track_StartPoint + 1
     Track_FrameLength = AscW(Mid(Anim_Source, Track_StartPoint + 0, 1))
     Track_FPS = AscW(Mid(Anim_Source, Track_StartPoint + 1, 1))
     Track_FrameCount = AscW(Mid(Anim_Source, Track_StartPoint + 2, 1))
@@ -180,7 +177,7 @@ Script AnimTrackInner_SeekFrame(frame As Integer, Return Integer)
     AnimCommon_TempI3 = AnimTrackInner_Util_ClampFrame(AnimCommon_TempI3 + 1)
     Call AnimTrackInner_LoadFrameHead_R(AnimCommon_TempI3)
     Call AnimTrackInner_LoadFrameValue_R(AnimCommon_TempI3)
-    Return AnimCommon_TempI3
+    Return Frame_Index_L
 End Script
 
 Script AnimTrackInner_LoadFrameHead_L(frame As Integer, Return Integer)
@@ -259,7 +256,7 @@ Export Script AnimTrack_Internal_Decode(s As String, Return String)
         Return ""
     End If
 
-    AnimCommon_TempS0 = ""
+    AnimCommon_TempS0 = ChrW(CUMath_Int16(CUMath_Decode(s, 1, 1, 64)))
     AnimCommon_TempI1 = 2
     Do While AnimCommon_TempI1 < AnimCommon_TempI0
         AnimCommon_TempS0 = AnimCommon_TempS0 & ChrW(CUMath_Int16(CUMath_Decode(s, AnimCommon_TempI1, 3, 64)))
@@ -297,14 +294,19 @@ Export Script AnimTrack_CalcFrameValue(track As Integer, frame As Integer, Retur
     AnimCommon_TempI3 = AnimTrackInner_SeekFrame(frame)
     If AnimCommon_TempI3 < 0 Then
         Return 0
-    ElseIf AnimCommon_TempI3 <= 0 Then
-        AnimCommon_TempI3 = Track_FrameLength - Frame_Index_L
+    ElseIf Frame_Index_L > Frame_Index_R Then
+        AnimCommon_TempD0 = Track_FrameLength - Frame_Index_L + Frame_Index_R
+        If frame >= Frame_Index_L Then
+            frame = frame - Frame_Index_L
+        Else
+            frame = Track_FrameLength - Frame_Index_L + frame
+        End If
     Else
-        AnimCommon_TempI3 = Frame_Index_R - Frame_Index_L
+        AnimCommon_TempD0 = Frame_Index_R - Frame_Index_L
+        frame = frame - Frame_Index_L
     End If
-    frame = frame - Frame_Index_L
 
-    If AnimCommon_TempI3 <= 0.0001 Then
+    If AnimCommon_TempD0 <= 0.0001 Then
         Frame_X_Ret = Frame_X_L
         Frame_Y_Ret = Frame_Y_L
         Frame_Z_Ret = Frame_Z_L
@@ -312,7 +314,7 @@ Export Script AnimTrack_CalcFrameValue(track As Integer, frame As Integer, Retur
         Return -1
     End If
 
-    AnimCommon_TempD0 = (frame - Frame_Index_L) / AnimCommon_TempD0
+    AnimCommon_TempD0 = frame / AnimCommon_TempD0
     Frame_X_Ret = CUMath_Lerp(Frame_X_L, Frame_X_R, AnimCommon_TempD0)
     Frame_Y_Ret = CUMath_Lerp(Frame_Y_L, Frame_Y_R, AnimCommon_TempD0)
     Frame_Z_Ret = CUMath_Lerp(Frame_Z_L, Frame_Z_R, AnimCommon_TempD0)

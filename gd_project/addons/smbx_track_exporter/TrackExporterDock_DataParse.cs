@@ -25,7 +25,7 @@ public static class Encoder
         if (value >= 64) return (byte)'0';
         return (byte)CharSet[value];
     }
-    
+
     public static byte[] Encode<T>(T values) where T : IEnumerable<ushort>
     {
         var bytes = new List<byte>();
@@ -45,9 +45,9 @@ public static class Encoder
         var a = (byte)CharSet[value % 64];
         var b = (byte)CharSet[value / 64 % 64];
         var c = (byte)CharSet[value / 64 / 64 % 64];
-        return (a, b, c);
+        return (c, b, a);
     }
-    
+
     public static ushort Decode(in ReadOnlySpan<byte> bytes)
     {
         var value = 0ul;
@@ -89,12 +89,12 @@ public partial class TrackExporterDock
                 if (nums.Length < 1) MultiplierNum = Parse(nums.Length > 0 ? nums[0] : "");
                 else MultiplierNum = Parse(nums[0]) / Parse(nums[1]);
                 return;
-                
+
                 static double Parse(string? s)
                 {
                     s = s?.Trim().ToLower() ?? "";
                     if (string.IsNullOrEmpty(s)) return 1;
-                    
+
                     var inv = false;
                     if (s.StartsWith("inv_"))
                     {
@@ -132,7 +132,7 @@ public partial class TrackExporterDock
                 }
             }
         }
-        
+
         public double MultiplierNum { get; private set; } = 1;
 
         private string? _multiplierSrc = "";
@@ -170,12 +170,12 @@ public partial class TrackExporterDock
         {
             return dict.TryGetValue(key, out var v) ? (string)v : fallback;
         }
-        
+
         public struct ValueScale(short innerMultiplier = 1, short outerMultiplier = 1, short innerAddition = 0, short outerAddition = 0)
         {
             public const short MaxScale = short.MaxValue;
             public const short MinScale = short.MinValue;
-            
+
             public short InnerMultiplier = innerMultiplier; // Mi
             public short OuterMultiplier = outerMultiplier; // Mo
             public short InnerAddition = innerAddition;     // Ai
@@ -208,7 +208,7 @@ public partial class TrackExporterDock
             public ushort GetNormalizedValue(double value)
             {
                 const double denominator = Value4d.IntegerOffset;
-                
+
                 if (InnerMultiplier <= double.Epsilon) return 0;
                 if (OuterMultiplier <= double.Epsilon) return 0;
                 var ret = ((value - OuterAddition) / OuterMultiplier - InnerAddition) / InnerMultiplier;
@@ -221,9 +221,9 @@ public partial class TrackExporterDock
                     ret /= Value4d.DecimalScale;
                     var v = (ushort)((ToShort(ret * denominator) + Value4d.IntegerOffset) &
                                      Value4d.ValueMask);
-                    return (ushort)(v | Value4d.TypeMask);
+                    return (ushort)(v | Value4d.FixedTypeMask);
                 }
-                return (ushort)(((ToShort(ret) + Value4d.IntegerOffset) & Value4d.ValueMask) | Value4d.TypeMask);
+                return (ushort)(((ToShort(ret) + Value4d.IntegerOffset) & Value4d.ValueMask) | Value4d.IntTypeMask);
             }
 
             public static ValueScale GetValueScale(double maxValue, double minValue)
@@ -234,7 +234,7 @@ public partial class TrackExporterDock
                 if (minValue > maxValue) (maxValue, minValue) = (minValue, maxValue);
 
                 // 分配一组相对合理的缩放系数
-                var range = Math.Abs(maxValue - minValue); 
+                var range = Math.Abs(maxValue - minValue);
                 // ReSharper disable once ConvertIfStatementToSwitchStatement
                 if (range <= double.Epsilon)
                 {
@@ -272,7 +272,7 @@ public partial class TrackExporterDock
                     // 求解 kx+b=y -> (x=MinInteger,y=minValue)&(x=MaxInteger,y=maxValue)
                     var k = (maxValue - minValue) / (Value4d.MaxInteger - Value4d.MinInteger);
                     var b = maxValue - k * Value4d.MaxInteger;
-                    
+
                     // result = v * Mi*Mo + Ai*Mo+Ao
                     var (mi, mo, sign) = SplitValue(k, true);
                     if (Math.Abs(b) < double.Epsilon)
@@ -301,7 +301,7 @@ public partial class TrackExporterDock
 
             public static short ToShort(double value)
                 => (short)Math.Clamp(Math.Round(value), MinScale, MaxScale);
-            
+
             private static (double a, double b, double sign) SplitValue(double value, bool? isUpper = null)
             {
                 if (value <= double.Epsilon) return (0, 0, 0);
@@ -325,16 +325,16 @@ public partial class TrackExporterDock
         public const ushort FixedTypeMask = 0b0100_0000_0000_0000;
         public const ushort ValueMask = 0b0011_1111_1111_1111;
         public const ushort TypeMask = 0b1100_0000_0000_0000;
-        
+
         public const short IntegerOffset = 8191;
         public const short MinInteger = MinIntegerSrc - IntegerOffset;
         public const short MaxInteger = MaxIntegerSrc - IntegerOffset;
-        
+
         public const ushort MinIntegerSrc = 0;
         public const ushort MaxIntegerSrc = 16383;
-        
+
         public const byte MaxDimension = 4;
-        
+
         public double X = x;
         public double Y = y;
         public double Z = z;
@@ -431,7 +431,7 @@ public partial class TrackExporterDock
             ret.Dimension = idx;
             return ret;
         }
-        
+
         public static Value4d Parse(in Variant variant)
         {
             var ret = new Value4d();
@@ -565,7 +565,7 @@ public partial class TrackExporterDock
             // ReSharper restore PossiblyImpureMethodCallOnReadonlyVariable
             return ret;
         }
-        
+
         public struct NormalizedValue4d(ushort x, ushort y, ushort z, ushort w, byte dimension)
         {
             [Flags]
@@ -575,7 +575,7 @@ public partial class TrackExporterDock
                 Min = 1 << 0,
                 Max = 1 << 1,
             }
-            
+
             public ushort X = x;
             public ushort Y = y;
             public ushort Z = z;
