@@ -81,11 +81,11 @@ End Script
 Script AnimTrackInner_Util_FormatValue(value As Integer, Return Double)
     AnimCommon_TempI0 = CUMath_UInt16(value)
     If (AnimCommon_TempI0 And 49152) = 16384 Then
-        AnimCommon_TempD0 = AnimCommon_TempI0 And 16383
+        AnimCommon_TempD0 = (AnimCommon_TempI0 And 16383) - 8191
         AnimCommon_TempD0 = AnimCommon_TempD0 / 8191
         AnimCommon_TempD0 = AnimCommon_TempD0 * 20
     Else
-        AnimCommon_TempD0 = AnimCommon_TempI0 And 16383
+        AnimCommon_TempD0 = (AnimCommon_TempI0 And 16383) - 8191
     End If
     Return (AnimCommon_TempD0 * Track_InnerMultiplier + Track_InnerAddition) * Track_OuterMultiplier + Track_OuterAddition
 End Script
@@ -125,10 +125,10 @@ Script AnimTrackInner_LoadTrack(track As Integer, Return Integer)
     Track_FrameLength = AscW(Mid(Anim_Source, Track_StartPoint + 0, 1))
     Track_FPS = AscW(Mid(Anim_Source, Track_StartPoint + 1, 1))
     Track_FrameCount = AscW(Mid(Anim_Source, Track_StartPoint + 2, 1))
-    Track_InnerAddition = AscW(Mid(Anim_Source, Track_StartPoint + 3, 1))
-    Track_OuterAddition = AscW(Mid(Anim_Source, Track_StartPoint + 4, 1))
-    Track_InnerMultiplier = AscW(Mid(Anim_Source, Track_StartPoint + 5, 1))
-    Track_OuterMultiplier = AscW(Mid(Anim_Source, Track_StartPoint + 6, 1))
+    Track_InnerMultiplier = AscW(Mid(Anim_Source, Track_StartPoint + 3, 1))
+    Track_OuterMultiplier = AscW(Mid(Anim_Source, Track_StartPoint + 4, 1))
+    Track_InnerAddition = AscW(Mid(Anim_Source, Track_StartPoint + 5, 1))
+    Track_OuterAddition = AscW(Mid(Anim_Source, Track_StartPoint + 6, 1))
     Track_Dimension = AscW(Mid(Anim_Source, Track_StartPoint + 7, 1)) And 3
     Return -1
 End Script
