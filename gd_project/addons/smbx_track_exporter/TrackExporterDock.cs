@@ -7,7 +7,7 @@ namespace gd_project.addons.smbx_track_exporter;
 // ReSharper disable once Godot.MissingParameterlessConstructor
 public partial class TrackExporterDock : VBoxContainer
 {
-    private readonly EditorInterface _editor;
+    private readonly EditorInterface? _editor;
     private readonly TrackExporterConfig _config = new();
 
     private AnimationPlayer? _player;
@@ -21,6 +21,8 @@ public partial class TrackExporterDock : VBoxContainer
     private readonly LineEdit _exportPath = new();
     private readonly FileDialog _fileDialog = new();
     private readonly Label _statusLabel = new();
+
+    public TrackExporterDock() {}
 
     public TrackExporterDock(EditorInterface editor)
     {
@@ -155,8 +157,8 @@ public partial class TrackExporterDock : VBoxContainer
 
     private void UseSelectedAnimationPlayer()
     {
-        var selection = _editor.GetSelection();
-        var selected = selection.GetSelectedNodes();
+        var selection = _editor?.GetSelection();
+        var selected = selection?.GetSelectedNodes() ?? [];
         foreach (var node in selected)
         {
             if (node is not AnimationPlayer ap) continue;

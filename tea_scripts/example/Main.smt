@@ -1,11 +1,12 @@
 'Script No.4 Name:New Script
 
-call exescript(Libs)
-call exescript(AnimTrack)
-call exescript(Anim)
+call exescript(Libs) ' 运算支撑库
+call exescript(AnimTrack) ' 动画支撑库
 
-Call AnimTrackLoad_Walk()
-call showmsg(cstr(animtrack_getx()) & ", " & cstr(animtrack_gety()))
+call exescript(Anim) ' 数据 (从引擎烘焙的动画数据)
+
+Call AnimTrackLoad_Walk() ' 加载一个 walk 东湖
+' call showmsg(cstr(animtrack_getx()) & ", " & cstr(animtrack_gety()))
 
 ' pos dim
 Dim Pos_x As Integer = 400

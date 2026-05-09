@@ -8,7 +8,6 @@ public partial class TrackExporterConfig : RefCounted
 
     public Godot.Collections.Dictionary Data { get; private set; } = new();
 
-
     public void Load()
     {
         if (!FileAccess.FileExists(ConfigPath))

@@ -315,6 +315,22 @@ tracks/11/keys = {
 "values": [Vector2(19, -29)]
 }
 
+[sub_resource type="Animation" id="Animation_7mycd"]
+resource_name = "Test"
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anim_root/body_root/arm_left/hand:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2013266),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-1, 22), Vector2(-44, 13)]
+}
+
 [sub_resource type="Animation" id="Animation_1bvp3"]
 resource_name = "Walk"
 length = 1.6
@@ -481,6 +497,7 @@ tracks/12/keys = {
 _data = {
 &"Idle": SubResource("Animation_h2yge"),
 &"RESET": SubResource("Animation_lquwl"),
+&"Test": SubResource("Animation_7mycd"),
 &"Walk": SubResource("Animation_1bvp3")
 }
 
@@ -522,7 +539,7 @@ metadata/_edit_group_ = true
 
 [node name="arm_left1" type="Line2D" parent="anim_root/view/lines" unique_id=572424126]
 self_modulate = Color(0.3767012, 0.54603034, 0.93070287, 0.6901961)
-points = PackedVector2Array(-1, -58, -25, -31)
+points = PackedVector2Array(0, -52, 0, -14)
 width = 1.0
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/shoulder/shoulder_left")
@@ -530,7 +547,7 @@ EndNodePath = NodePath("../../../body_root/arm_left/arm")
 
 [node name="arm_left2" type="Line2D" parent="anim_root/view/lines" unique_id=301923625]
 self_modulate = Color(0.3767012, 0.54603034, 0.93070287, 0.6901961)
-points = PackedVector2Array(-25, -31, -1, -6)
+points = PackedVector2Array(0, -14, -34.68332, 14.950012)
 width = 1.0
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/arm_left/arm")
@@ -538,7 +555,7 @@ EndNodePath = NodePath("../../../body_root/arm_left/hand")
 
 [node name="arm_right1" type="Line2D" parent="anim_root/view/lines" unique_id=1965714090]
 self_modulate = Color(0.3767012, 0.54603034, 0.93070287, 0.6901961)
-points = PackedVector2Array(8, -52, 20, -26)
+points = PackedVector2Array(0, -52, 0, -14)
 width = 1.0
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/shoulder/shoulder_right")
@@ -546,7 +563,7 @@ EndNodePath = NodePath("../../../body_root/arm_right/arm")
 
 [node name="arm_right2" type="Line2D" parent="anim_root/view/lines" unique_id=1067881961]
 self_modulate = Color(0.3767012, 0.54603034, 0.93070287, 0.6901961)
-points = PackedVector2Array(20, -26, 45, -15)
+points = PackedVector2Array(0, -14, -1, 22)
 width = 1.0
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/arm_right/arm")
@@ -554,7 +571,7 @@ EndNodePath = NodePath("../../../body_root/arm_right/hand")
 
 [node name="leg_left1" type="Line2D" parent="anim_root/view/lines" unique_id=177124852]
 self_modulate = Color(0.913234, 0, 0.26135224, 0.6)
-points = PackedVector2Array(5, 0, 17, 32)
+points = PackedVector2Array(1, -2, 19, 34)
 width = 1.0
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/hip/hip_left")
@@ -562,7 +579,7 @@ EndNodePath = NodePath("../../../body_root/leg_left/knee_left")
 
 [node name="leg_left2" type="Line2D" parent="anim_root/view/lines" unique_id=1973378451]
 self_modulate = Color(0.913234, 0, 0.26135224, 0.6)
-points = PackedVector2Array(17, 32, 3, 89)
+points = PackedVector2Array(19, 34, -11, 58)
 width = 1.0
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/leg_left/knee_left")
@@ -570,7 +587,7 @@ EndNodePath = NodePath("../../../body_root/leg_left/foot_left")
 
 [node name="leg_right1" type="Line2D" parent="anim_root/view/lines" unique_id=1868286249]
 self_modulate = Color(0.913234, 0, 0.26135224, 0.6)
-points = PackedVector2Array(-4, 3, -7, 40)
+points = PackedVector2Array(1, -2, -1, 46)
 width = 1.0
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/hip/hip_right")
@@ -578,7 +595,7 @@ EndNodePath = NodePath("../../../body_root/leg_right/knee_right")
 
 [node name="leg_right2" type="Line2D" parent="anim_root/view/lines" unique_id=178184969]
 self_modulate = Color(0.913234, 0, 0.26135224, 0.6)
-points = PackedVector2Array(-7, 40, 3, 92)
+points = PackedVector2Array(-1, 46, -1, 89)
 width = 1.0
 script = ExtResource("3_h2yge")
 StartNodePath = NodePath("../../../body_root/leg_right/knee_right")
@@ -671,7 +688,6 @@ scale = Vector2(0.5, 0.5)
 text = "12"
 
 [node name="arm_left" type="Node2D" parent="anim_root/body_root" unique_id=746961219]
-metadata/_edit_lock_ = true
 
 [node name="arm" type="Node2D" parent="anim_root/body_root/arm_left" unique_id=576292325]
 position = Vector2(-14, -28)
@@ -726,6 +742,7 @@ text = "2"
 
 [node name="hand" type="Node2D" parent="anim_root/body_root/arm_right" unique_id=867754072]
 position = Vector2(33, -18)
+metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
 [node name="X1" type="Sprite2D" parent="anim_root/body_root/arm_right/hand" unique_id=580197263]

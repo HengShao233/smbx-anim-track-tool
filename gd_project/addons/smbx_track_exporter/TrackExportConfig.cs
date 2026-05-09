@@ -1,6 +1,7 @@
 using Godot;
 
 
+// ReSharper disable once CheckNamespace
 public partial class TrackExportConfig : RefCounted
 {
     private const string ConfigPath = "user://smbx_track_exporter_config.json";
